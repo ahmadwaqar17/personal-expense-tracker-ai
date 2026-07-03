@@ -1,0 +1,32 @@
+{% extends "expenses/base.html" %}
+{% block content %}
+<div class="flex min-h-[75vh] items-center justify-center px-2 py-4 sm:px-0">
+  <div class="w-full max-w-sm rounded-3xl border border-slate-200/70 bg-white/90 p-6 shadow-lg shadow-slate-200/70 sm:p-8">
+    <div class="mb-6 text-center">
+      <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-2xl font-bold text-emerald-600">A</div>
+      <h1 class="text-2xl font-bold text-navy">AI Expense Tracker</h1>
+      <p class="mt-2 text-sm text-slate-500">Sign in to keep your spending organized.</p>
+    </div>
+    {% if error %}
+    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{{ error }}</div>
+    {% endif %}
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Email</label>
+        <input type="email" name="email" required
+               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Password</label>
+        <input type="password" name="password" required
+               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+      </div>
+      <button type="submit"
+              class="w-full rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
+        Sign In
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

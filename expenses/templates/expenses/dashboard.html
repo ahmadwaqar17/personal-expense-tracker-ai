@@ -1,0 +1,107 @@
+{% extends "expenses/base.html" %}
+{% load expense_filters %}
+{% block content %}
+{% regroup recent_expenses by date as date_list %}
+<div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+  <div>
+    <p class="text-sm font-medium text-emerald-600">Welcome back</p>
+    <h1 class="text-2xl font-bold text-navy sm:text-3xl">Your expense overview</h1>
+  </div>
+  <div class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
+    Quick insights at a glance
+  </div>
+</div>
+
+<div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+  <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm shadow-slate-200/70 backdrop-blur">
+    <p class="text-sm text-slate-500">Today</p>
+    <p class="mt-2 text-2xl font-bold text-navy">{{ today_total|pkr }}</p>
+  </div>
+  <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm shadow-slate-200/70 backdrop-blur">
+    <p class="text-sm text-slate-500">This Week</p>
+    <p class="mt-2 text-2xl font-bold text-navy">{{ week_total|pkr }}</p>
+  </div>
+  <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm shadow-slate-200/70 backdrop-blur">
+    <p class="text-sm text-slate-500">This Month</p>
+    <p class="mt-2 text-2xl font-bold text-navy">{{ month_total|pkr }}</p>
+  </div>
+</div>
+
+<div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+  <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm shadow-slate-200/70 backdrop-blur sm:p-6">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-navy">Category Breakdown</h2>
+      <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Visual</span>
+    </div>
+    <canvas id="categoryChart" height="220"></canvas>
+  </div>
+  <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm shadow-slate-200/70 backdrop-blur sm:p-6">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-navy">Recent Transactions</h2>
+      <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">Latest</span>
+    </div>
+    {% if recent_expenses %}
+    <div class="space-y-3">
+      {% for exp in recent_expenses %}
+      <div class="flex items-start justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+        <div class="min-w-0">
+          <p class="truncate font-medium text-slate-800">{{ exp.merchant }}</p>
+          <p class="mt-1 text-xs text-slate-500">{{ exp.date|date:"d M" }} {{ exp.time|time:"H:i" }}</p>
+        </div>
+        <div class="flex shrink-0 items-center gap-2">
+          <div class="text-right">
+            <p class="font-semibold text-slate-800">{{ exp.amount|pkr }}</p>
+            <span class="mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-medium {{ exp.category|category_color }}">{{ exp.category }}</span>
+          </div>
+          <form method="post" action="{% url 'delete_expense' exp.id %}" onsubmit="return confirm('Delete this expense?')">
+            {% csrf_token %}
+            <button class="rounded-full p-2 text-red-400 transition hover:bg-red-50 hover:text-red-600" title="Delete" aria-label="Delete expense">&times;</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+      No expenses yet. Start by uploading a receipt or adding one manually.
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="flex flex-col gap-3 sm:flex-row">
+  <a href="{% url 'upload_receipt' %}" class="flex-1 rounded-2xl bg-accent px-4 py-3 text-center font-semibold text-white transition hover:bg-emerald-600">
+    Upload Receipt
+  </a>
+  <a href="{% url 'manual_entry' %}" class="flex-1 rounded-2xl bg-navy px-4 py-3 text-center font-semibold text-white transition hover:bg-blue-900">
+    Add Manually
+  </a>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var data = {{ category_breakdown_json|safe }};
+  var ctx = document.getElementById('categoryChart');
+  if (ctx && Object.keys(data).length > 0) {
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(data),
+        datasets: [{
+          data: Object.values(data),
+          backgroundColor: ['#f97316','#3b82f6','#a855f7','#eab308','#ef4444','#6b7280'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "expenses/base.html" %}
+{% block content %}
+<div class="mx-auto max-w-2xl">
+  <div class="mb-6">
+    <p class="text-sm font-medium text-emerald-600">Quick entry</p>
+    <h1 class="text-2xl font-bold text-navy">Add Expense Manually</h1>
+    <p class="mt-1 text-sm text-slate-500">Capture a purchase in seconds, even when you are offline.</p>
+  </div>
+
+  {% if saved %}
+  <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">Expense saved successfully!</div>
+  {% endif %}
+
+  <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 shadow-sm shadow-slate-200/70 sm:p-6">
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Date</label>
+          <input type="date" name="date" value="{{ today }}"
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Time</label>
+          <input type="time" name="time" value="{{ now }}"
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+        </div>
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Amount (PKR)</label>
+        <input type="number" step="0.01" name="amount" required
+               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+               placeholder="1500.00">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Merchant</label>
+        <input type="text" name="merchant" required
+               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+               placeholder="Store name">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Category</label>
+        <select name="category"
+                class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+          <option value="Food">Food</option>
+          <option value="Transport">Transport</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Utility">Utility</option>
+          <option value="Health">Health</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Description</label>
+        <input type="text" name="description"
+               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+               placeholder="Optional note">
+      </div>
+      <button type="submit"
+              class="w-full rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
+        Save Expense
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
