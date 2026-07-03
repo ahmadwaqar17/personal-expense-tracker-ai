@@ -1,29 +1,32 @@
 {% extends "expenses/base.html" %}
 {% block content %}
-<div class="flex min-h-[75vh] items-center justify-center px-2 py-4 sm:px-0">
-  <div class="w-full max-w-sm rounded-3xl border border-slate-200/70 bg-white/90 p-6 shadow-lg shadow-slate-200/70 sm:p-8">
-    <div class="mb-6 text-center">
-      <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-2xl font-bold text-emerald-600">A</div>
-      <h1 class="text-2xl font-bold text-navy">AI Expense Tracker</h1>
-      <p class="mt-2 text-sm text-slate-500">Sign in to keep your spending organized.</p>
+<div class="min-h-[80vh] flex items-center justify-center">
+  <div class="glass-card rounded-3xl p-8 sm:p-10 w-full max-w-sm mx-4">
+    <div class="text-center mb-8">
+      <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-2xl font-bold text-white shadow-lg shadow-emerald-500/20 mb-4">$</div>
+      <h1 class="text-2xl font-extrabold text-slate-800">AI Expense Tracker</h1>
+      <p class="text-sm text-slate-500 mt-1.5">Sign in to manage your expenses</p>
     </div>
     {% if error %}
-    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{{ error }}</div>
+    <div class="flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 mb-6 border border-red-100">
+      <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      {{ error }}
+    </div>
     {% endif %}
-    <form method="post" class="space-y-4">
+    <form method="post">
       {% csrf_token %}
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">Email</label>
-        <input type="email" name="email" required
-               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+      <div class="mb-4">
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Email</label>
+        <input type="email" name="email" required placeholder="you@example.com"
+               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
       </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">Password</label>
-        <input type="password" name="password" required
-               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+      <div class="mb-6">
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Password</label>
+        <input type="password" name="password" required placeholder="Enter your password"
+               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
       </div>
       <button type="submit"
-              class="w-full rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
+              class="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition hover:from-emerald-600 hover:to-emerald-700 hover:shadow-xl">
         Sign In
       </button>
     </form>

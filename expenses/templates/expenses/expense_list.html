@@ -1,19 +1,19 @@
 {% extends "expenses/base.html" %}
 {% load expense_filters %}
 {% block content %}
-<div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
   <div>
-    <h1 class="text-2xl font-bold text-navy">All Expenses</h1>
-    <p class="mt-1 text-sm text-slate-500">Review, filter, and remove expenses quickly from any device.</p>
+    <h1 class="text-2xl font-bold text-slate-800">All Expenses</h1>
+    <p class="text-sm text-slate-500 mt-0.5">{{ expenses|length }} transaction{{ expenses|length|pluralize }}</p>
   </div>
-  <form method="get" class="flex flex-col gap-2 rounded-2xl border border-slate-200/70 bg-white/90 p-3 shadow-sm shadow-slate-200/70 sm:flex-row sm:items-center">
-    <select name="year" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent sm:w-auto">
+  <form method="get" class="flex flex-col sm:flex-row gap-2">
+    <select name="year" class="rounded-xl border border-slate-200 bg-white/80 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
       <option value="">All years</option>
       {% for y in year_range %}
       <option value="{{ y }}" {% if selected_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
       {% endfor %}
     </select>
-    <select name="month" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent sm:w-auto">
+    <select name="month" class="rounded-xl border border-slate-200 bg-white/80 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
       <option value="">All months</option>
       <option value="1" {% if selected_month == '1' %}selected{% endif %}>January</option>
       <option value="2" {% if selected_month == '2' %}selected{% endif %}>February</option>
@@ -28,90 +28,111 @@
       <option value="11" {% if selected_month == '11' %}selected{% endif %}>November</option>
       <option value="12" {% if selected_month == '12' %}selected{% endif %}>December</option>
     </select>
-    <select name="category" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent sm:w-auto">
+    <select name="category" class="rounded-xl border border-slate-200 bg-white/80 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
       <option value="">All categories</option>
       {% for key, label in categories.items %}
       <option value="{{ key }}" {% if selected_category == key %}selected{% endif %}>{{ label }}</option>
       {% endfor %}
     </select>
-    <button type="submit" class="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-900">Filter</button>
+    <button type="submit" class="rounded-xl bg-gradient-to-r from-slate-700 to-slate-800 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:from-slate-800 hover:to-slate-900">Filter</button>
   </form>
 </div>
 
 {% if expenses %}
-<div class="hidden overflow-hidden rounded-2xl border border-slate-200/70 bg-white/90 shadow-sm shadow-slate-200/70 md:block">
-  <div class="overflow-x-auto">
-    <table class="w-full min-w-[720px] text-sm">
-      <thead class="bg-slate-50 text-slate-600">
-        <tr>
-          <th class="px-4 py-3 text-left font-medium">Date</th>
-          <th class="px-4 py-3 text-left font-medium">Merchant</th>
-          <th class="px-4 py-3 text-left font-medium">Category</th>
-          <th class="px-4 py-3 text-right font-medium">Amount</th>
-          <th class="px-4 py-3 text-center font-medium">Source</th>
-          <th class="px-4 py-3 text-center font-medium"></th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-100">
-        {% for exp in expenses %}
-        <tr class="hover:bg-slate-50">
-          <td class="px-4 py-3">{{ exp.date|date:"d M Y" }} {{ exp.time|time:"H:i" }}</td>
-          <td class="px-4 py-3 font-medium text-slate-800">{{ exp.merchant }}</td>
-          <td class="px-4 py-3"><span class="inline-block rounded-full px-2 py-0.5 text-[11px] font-medium {{ exp.category|category_color }}">{{ exp.category }}</span></td>
-          <td class="px-4 py-3 text-right font-semibold text-slate-800">{{ exp.amount|pkr }}</td>
-          <td class="px-4 py-3 text-center">
-            {% if exp.source == "receipt" %}
-            <span class="rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-medium text-blue-700">Receipt</span>
-            {% else %}
-            <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">Manual</span>
-            {% endif %}
-          </td>
-          <td class="px-4 py-3 text-center">
-            <form method="post" action="{% url 'delete_expense' exp.id %}" onsubmit="return confirm('Delete this expense?')">
-              {% csrf_token %}
-              <button class="rounded-full px-3 py-1 text-sm font-medium text-red-500 transition hover:bg-red-50 hover:text-red-700">Delete</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+<div class="hidden md:block glass-card rounded-2xl overflow-hidden">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b border-slate-100 bg-slate-50/80">
+        <th class="text-left px-5 py-3.5 font-semibold text-slate-600">Date</th>
+        <th class="text-left px-5 py-3.5 font-semibold text-slate-600">Merchant</th>
+        <th class="text-left px-5 py-3.5 font-semibold text-slate-600">Category</th>
+        <th class="text-right px-5 py-3.5 font-semibold text-slate-600">Amount</th>
+        <th class="text-center px-5 py-3.5 font-semibold text-slate-600">Source</th>
+        <th class="text-center px-5 py-3.5 font-semibold text-slate-600"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      {% for exp in expenses %}
+      <tr class="transition hover:bg-slate-50/70">
+        <td class="px-5 py-3.5 text-slate-600">{{ exp.date|date:"d M Y" }}<span class="text-slate-400"> {{ exp.time|time:"H:i" }}</span></td>
+        <td class="px-5 py-3.5 font-semibold text-slate-800">{{ exp.merchant }}</td>
+        <td class="px-5 py-3.5"><span class="inline-block rounded-full px-2.5 py-1 text-xs font-semibold {{ exp.category|category_color }}">{{ exp.category }}</span></td>
+        <td class="px-5 py-3.5 text-right font-bold text-slate-800">{{ exp.amount|pkr }}</td>
+        <td class="px-5 py-3.5 text-center">
+          {% if exp.source == "receipt" %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-600">
+            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+            Receipt
+          </span>
+          {% else %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">
+            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            Manual
+          </span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-3.5 text-center">
+          <form method="post" action="{% url 'delete_expense' exp.id %}" onsubmit="return confirm('Delete this expense?')">
+            {% csrf_token %}
+            <button class="rounded-lg px-3 py-1.5 text-xs font-semibold text-red-500 transition hover:bg-red-50 hover:text-red-700">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
-<div class="space-y-3 md:hidden">
+<div class="md:hidden space-y-3">
   {% for exp in expenses %}
-  <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 shadow-sm shadow-slate-200/70">
+  <div class="glass-card rounded-2xl p-4">
     <div class="flex items-start justify-between gap-3">
-      <div>
-        <p class="font-semibold text-slate-800">{{ exp.merchant }}</p>
-        <p class="mt-1 text-xs text-slate-500">{{ exp.date|date:"d M Y" }} {{ exp.time|time:"H:i" }}</p>
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-xs font-bold shadow-sm
+          {% if exp.category == 'Food' %}bg-orange-100 text-orange-600
+          {% elif exp.category == 'Transport' %}bg-blue-100 text-blue-600
+          {% elif exp.category == 'Shopping' %}bg-purple-100 text-purple-600
+          {% elif exp.category == 'Utility' %}bg-yellow-100 text-yellow-600
+          {% elif exp.category == 'Health' %}bg-red-100 text-red-600
+          {% else %}bg-gray-100 text-gray-600{% endif %}">
+          {{ exp.merchant|first|upper }}
+        </span>
+        <div class="min-w-0">
+          <p class="font-semibold text-slate-800 truncate">{{ exp.merchant }}</p>
+          <p class="text-xs text-slate-400 mt-0.5">{{ exp.date|date:"d M Y" }} {{ exp.time|time:"H:i" }}</p>
+        </div>
       </div>
-      <p class="font-bold text-navy">{{ exp.amount|pkr }}</p>
+      <div class="text-right shrink-0">
+        <p class="font-bold text-slate-800">{{ exp.amount|pkr }}</p>
+        <div class="flex items-center gap-1 mt-1 justify-end">
+          <span class="text-xs px-2 py-0.5 rounded-full font-semibold {{ exp.category|category_color }}">{{ exp.category }}</span>
+        </div>
+      </div>
     </div>
-    <div class="mt-3 flex flex-wrap items-center gap-2">
-      <span class="rounded-full px-2 py-0.5 text-[11px] font-medium {{ exp.category|category_color }}">{{ exp.category }}</span>
-      {% if exp.source == "receipt" %}
-      <span class="rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-medium text-blue-700">Receipt</span>
-      {% else %}
-      <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">Manual</span>
-      {% endif %}
-    </div>
-    <div class="mt-3 text-right">
+    <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+      <span class="flex items-center gap-1 text-xs text-slate-500">
+        {% if exp.source == "receipt" %}
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+        Receipt
+        {% else %}
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        Manual
+        {% endif %}
+      </span>
       <form method="post" action="{% url 'delete_expense' exp.id %}" onsubmit="return confirm('Delete this expense?')">
         {% csrf_token %}
-        <button class="rounded-full px-3 py-1 text-sm font-medium text-red-500 transition hover:bg-red-50 hover:text-red-700">Delete</button>
+        <button class="rounded-lg px-3 py-1.5 text-xs font-semibold text-red-500 transition hover:bg-red-50 hover:text-red-700">Delete</button>
       </form>
     </div>
   </div>
   {% endfor %}
 </div>
 {% else %}
-<div class="rounded-2xl border border-slate-200/70 bg-white/90 p-8 text-center shadow-sm shadow-slate-200/70">
-  <p class="text-slate-500">No expenses found.</p>
-  <div class="mt-4 flex flex-col justify-center gap-3 sm:flex-row">
-    <a href="{% url 'upload_receipt' %}" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600">Upload Receipt</a>
-    <a href="{% url 'manual_entry' %}" class="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-900">Add Manually</a>
+<div class="glass-card rounded-2xl p-10 text-center">
+  <div class="flex flex-col items-center">
+    <div class="mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-3xl">📭</div>
+    <p class="text-lg font-semibold text-slate-500">No expenses found</p>
+    <p class="mt-1 text-sm text-slate-400">Try adjusting your filters</p>
   </div>
 </div>
 {% endif %}

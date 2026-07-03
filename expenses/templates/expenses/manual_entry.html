@@ -1,47 +1,48 @@
 {% extends "expenses/base.html" %}
 {% block content %}
-<div class="mx-auto max-w-2xl">
-  <div class="mb-6">
-    <p class="text-sm font-medium text-emerald-600">Quick entry</p>
-    <h1 class="text-2xl font-bold text-navy">Add Expense Manually</h1>
-    <p class="mt-1 text-sm text-slate-500">Capture a purchase in seconds, even when you are offline.</p>
-  </div>
+<div class="max-w-lg mx-auto">
+  <h1 class="text-2xl font-bold text-slate-800 mb-1">Add Expense</h1>
+  <p class="text-sm text-slate-500 mb-6">Enter the details manually</p>
 
   {% if saved %}
-  <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">Expense saved successfully!</div>
+  <div class="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200/50 px-4 py-3 text-sm text-emerald-700 mb-6">
+    <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    Expense saved successfully!
+  </div>
   {% endif %}
 
-  <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 shadow-sm shadow-slate-200/70 sm:p-6">
-    <form method="post" class="space-y-4">
+  <div class="glass-card rounded-2xl p-6 sm:p-8">
+    <form method="post">
       {% csrf_token %}
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="mb-1 block text-sm font-medium text-slate-700">Date</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">Date</label>
           <input type="date" name="date" value="{{ today }}"
-                 class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+                 class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
         </div>
         <div>
-          <label class="mb-1 block text-sm font-medium text-slate-700">Time</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">Time</label>
           <input type="time" name="time" value="{{ now }}"
-                 class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+                 class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
         </div>
       </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">Amount (PKR)</label>
-        <input type="number" step="0.01" name="amount" required
-               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
-               placeholder="1500.00">
+      <div class="mt-4">
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Amount (PKR)</label>
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rs</span>
+          <input type="number" step="0.01" name="amount" required placeholder="0.00"
+                 class="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 py-2.5 text-sm transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+        </div>
       </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">Merchant</label>
-        <input type="text" name="merchant" required
-               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
-               placeholder="Store name">
+      <div class="mt-4">
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Merchant</label>
+        <input type="text" name="merchant" required placeholder="Store or service name"
+               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
       </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">Category</label>
+      <div class="mt-4">
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category</label>
         <select name="category"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+                class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
           <option value="Food">Food</option>
           <option value="Transport">Transport</option>
           <option value="Shopping">Shopping</option>
@@ -50,15 +51,17 @@
           <option value="Other">Other</option>
         </select>
       </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">Description</label>
-        <input type="text" name="description"
-               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
-               placeholder="Optional note">
+      <div class="mt-4">
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Description</label>
+        <input type="text" name="description" placeholder="Optional note"
+               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
       </div>
       <button type="submit"
-              class="w-full rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
-        Save Expense
+              class="mt-6 w-full rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition hover:from-emerald-600 hover:to-emerald-700">
+        <span class="flex items-center justify-center gap-2">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Save Expense
+        </span>
       </button>
     </form>
   </div>
