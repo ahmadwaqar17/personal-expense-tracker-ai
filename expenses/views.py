@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.db.models import Sum
 from django.shortcuts import redirect, render
