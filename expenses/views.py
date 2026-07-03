@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from datetime import timedelta
 
 from django.db.models import Sum
@@ -11,8 +12,8 @@ from .models import Expense
 
 logger = logging.getLogger(__name__)
 
-ADMIN_EMAIL = "admin@kharchatrack.com"
-ADMIN_PASSWORD = "kharcha123"
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@kharchatrack.com")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "kharcha123")
 
 
 def _login_required(view_func):
